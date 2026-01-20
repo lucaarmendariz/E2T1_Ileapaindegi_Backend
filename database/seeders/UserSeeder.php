@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@example.com',
             'rol' => 'A', // A = Admin
-            'password' => Hash::make('securepassword'), // Contraseña hasheada
+            'password' => Hash::make('hola'), // Contraseña hasheada
         ]);
 
         // Usuario normal
