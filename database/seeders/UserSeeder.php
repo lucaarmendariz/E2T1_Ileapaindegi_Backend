@@ -15,13 +15,16 @@ class UserSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@example.com',
             'rol' => 'A', // A = Admin
+            'password' => Hash::make('securepassword'), // Contraseña hasheada
         ]);
 
         // Usuario normal
         User::create([
             'username' => 'johndoe',
             'email' => 'johndoe@example.com',
-            'rol' => 'U', // U = Usuario
+            'rol' => 'U', // U = Usuario.
+            'password' => Hash::make('securepassword'), // Contraseña hasheada
+
         ]);
 
         // Otro usuario
@@ -29,6 +32,8 @@ class UserSeeder extends Seeder
             'username' => 'janedoe',
             'email' => 'janedoe@example.com',
             'rol' => 'U',
+            'password' => Hash::make('securepassword'), // Contraseña hasheada
+
         ]);
     }
 }
