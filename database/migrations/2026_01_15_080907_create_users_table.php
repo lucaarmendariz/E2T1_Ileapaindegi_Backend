@@ -14,10 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->string('username');
             $table->string('email')->unique();
+            $table->string('password'); // ← contraseña hasheada
             $table->char('rol', 1);
             $table->timestamps();
             $table->softDeletes();
         });
+
     }
 
     /**
