@@ -13,25 +13,29 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StudentConsumableController;
 use App\Http\Controllers\StudentEquipmentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('students', StudentController::class);
-Route::apiResource('appointments', AppointmentController::class);
-Route::apiResource('appointment_services', AppointmentServiceController::class);
-Route::apiResource('categorys', CategoryController::class);
-Route::apiResource('clients', ClientController::class);
-Route::apiResource('consumables', ConsumableController::class);
-Route::apiResource('equipments', EquipmentController::class);
-Route::apiResource('groups', GroupController::class);
-Route::apiResource('schedules', ScheduleController::class);
-Route::apiResource('services', ServiceController::class);
-Route::apiResource('shifts', ShiftController::class);
-Route::apiResource('student_consumables', StudentConsumableController::class);
-Route::apiResource('student_equipments', StudentEquipmentController::class);
-Route::apiResource('users', UserController::class);
+Route::apiResource('students', StudentController::class)->middleware('auth:sanctum');
+Route::apiResource('appointments', AppointmentController::class)->middleware('auth:sanctum');
+Route::apiResource('appointment_services', AppointmentServiceController::class)->middleware('auth:sanctum');
+Route::apiResource('categorys', CategoryController::class)->middleware('auth:sanctum');
+Route::apiResource('clients', ClientController::class)->middleware('auth:sanctum');
+Route::apiResource('consumables', ConsumableController::class)->middleware('auth:sanctum');
+Route::apiResource('equipments', EquipmentController::class)->middleware('auth:sanctum');
+Route::apiResource('groups', GroupController::class)->middleware('auth:sanctum');
+Route::apiResource('schedules', ScheduleController::class)->middleware('auth:sanctum');
+Route::apiResource('services', ServiceController::class)->middleware('auth:sanctum');
+Route::apiResource('shifts', ShiftController::class)->middleware('auth:sanctum');
+Route::apiResource('student_consumables', StudentConsumableController::class)->middleware('auth:sanctum');
+Route::apiResource('student_equipments', StudentEquipmentController::class)->middleware('auth:sanctum');
+Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
