@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppointmentService extends Model
 {
     protected $fillable = [
+        'comments',
         'appointment_id',
         'service_id'
     ];

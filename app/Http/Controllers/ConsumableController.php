@@ -21,9 +21,15 @@ class ConsumableController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'batch' => 'required|string',
+            'brand' => 'required|string',
             'stock' => 'required|integer',
-            'category_id' => 'required|exists:categories,id'
+            'min_stock' => 'required|integer',
+            'expiration_date' => 'required|date',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string'
         ]);
+
 
         $consumable = Consumable::create($request->all());
         return response()->json($consumable, 201);
