@@ -9,8 +9,8 @@ class StudentConsumable extends Model
     protected $fillable = [
         'student_id',
         'consumable_id',
-        'start_datetime',
-        'end_datetime'
+        'date',
+        'quantity'
     ];
 
     public function student()
@@ -22,4 +22,5 @@ class StudentConsumable extends Model
     {
         return $this->belongsTo(Consumable::class);
     }
+    protected $table = 'student_consumables';
 }
