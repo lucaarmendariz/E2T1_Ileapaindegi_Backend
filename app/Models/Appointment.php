@@ -10,8 +10,8 @@ class Appointment extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'seat',
         'date',
+        'seat',
         'start_time',
         'end_time',
         'comments',
