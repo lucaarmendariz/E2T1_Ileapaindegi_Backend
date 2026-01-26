@@ -31,6 +31,28 @@ class AppointmentController extends Controller
         return response()->json($appointment, 201);
     }
 
+    public function byDate(Request $request)
+{
+    $request->validate([
+        'date' => 'required|date'
+    ]);
+
+    $date = $request->query('date');
+
+    $appointments = Appointment::whereDate('date', $date)
+        ->get(['seat', 'date', 'start_time', 'end_time', 'comments']);
+
+    return response()->json(
+        $appointments->map(fn($a) => [
+            'inicio' => $a->start_time,
+            'fin'    => $a->end_time,
+            'titulo' => $a->comments,
+            'silla'  => $a->seat
+        ])
+    );
+}
+
+
     public function update(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);

@@ -16,7 +16,9 @@ class Appointment extends Model
         'end_time',
         'comments',
         'student_id',
-        'client_id'
+        'client_id',
+        'seat',
+        'comments'
     ];
 
     public function student()
