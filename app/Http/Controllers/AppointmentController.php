@@ -21,6 +21,7 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'date'=>'required|date',
+            'seat'=>'required|integer',
             'start_time'=>'required|date_format:H:i',
             'end_time'=>'required|date_format:H:i',
             'student_id'=>'required|exists:students,id',
