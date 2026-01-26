@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Appointment;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -66,4 +68,57 @@ class UserController extends Controller
         User::findOrFail($id)->delete();
         return response()->json(null, 204);
     }
+
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'name' => $user->username,
+            'email' => $user->email,
+            'rol' => $user->rol
+        ]);
+    }
+
+    public function progress(Request $request)
+{
+    $user = $request->user();
+
+    // Relación con el alumno
+    $student = $user->student;
+
+    if (!$student) {
+        return response()->json(['servicios_completados' => []]);
+    }
+
+    // Obtener todas las citas finalizadas del alumno con sus servicios
+    $appointments = $student->appointments()
+        ->whereDate('date', '<=', now()) // solo citas finalizadas
+        ->with('services.service')       // traer el servicio relacionado
+        ->get();
+
+    $completedServices = [];
+
+    foreach ($appointments as $appointment) {
+        foreach ($appointment->services as $appointmentService) {
+            $service = $appointmentService->service;
+            if ($service) {
+                $completedServices[] = [
+                    'id' => $service->id,
+                    'nombre' => $service->name,
+                ];
+            }
+        }
+    }
+
+    // Eliminar duplicados si el mismo servicio se hizo varias veces
+    $completedServices = collect($completedServices)
+        ->unique('id')
+        ->values();
+
+    return response()->json(['servicios_completados' => $completedServices]);
+}
+
+
+
 }

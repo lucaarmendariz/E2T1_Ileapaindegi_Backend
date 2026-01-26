@@ -29,8 +29,10 @@ class Appointment extends Model
         return $this->belongsTo(Client::class);
     }
 
+    // Appointment.php
     public function services()
     {
         return $this->hasMany(AppointmentService::class);
     }
+
 }

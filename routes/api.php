@@ -39,3 +39,11 @@ Route::apiResource('shifts', ShiftController::class)->middleware('auth:sanctum')
 Route::apiResource('student_consumables', StudentConsumableController::class)->middleware('auth:sanctum');
 Route::apiResource('student_equipments', StudentEquipmentController::class)->middleware('auth:sanctum');
 Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
+
+
+//Route to get the profile of the authenticated user
+Route::get('/profile', [UserController::class, 'profile'])
+    ->middleware('auth:sanctum');
+//Route to get the progress of the authenticated user
+Route::get('/profile/progress', [UserController::class, 'progress'])
+    ->middleware('auth:sanctum');

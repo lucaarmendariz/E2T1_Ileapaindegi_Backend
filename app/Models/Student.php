@@ -39,4 +39,10 @@ class Student extends Model
     {
         return $this->hasMany(StudentEquipment::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
