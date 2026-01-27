@@ -11,10 +11,14 @@ class Appointment extends Model
 
     protected $fillable = [
         'date',
+        'seat',
         'start_time',
         'end_time',
+        'comments',
         'student_id',
-        'client_id'
+        'client_id',
+        'seat',
+        'comments'
     ];
 
     public function student()
@@ -27,8 +31,10 @@ class Appointment extends Model
         return $this->belongsTo(Client::class);
     }
 
+    // Appointment.php
     public function services()
     {
         return $this->hasMany(AppointmentService::class);
     }
+
 }

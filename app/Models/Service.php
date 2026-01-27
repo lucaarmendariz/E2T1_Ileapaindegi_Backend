@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    protected $fillable = ['name', 'price'];
+    protected $fillable = [
+        'name', 
+        'price',
+        'home_price',
+        'duration'
+        ];
 
     public function appointmentServices()
     {

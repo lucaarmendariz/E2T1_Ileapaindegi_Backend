@@ -21,6 +21,7 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'date'=>'required|date',
+            'seat'=>'required|integer',
             'start_time'=>'required|date_format:H:i',
             'end_time'=>'required|date_format:H:i',
             'student_id'=>'required|exists:students,id',
@@ -30,6 +31,28 @@ class AppointmentController extends Controller
         $appointment = Appointment::create($request->all());
         return response()->json($appointment, 201);
     }
+
+    public function byDate(Request $request)
+{
+    $request->validate([
+        'date' => 'required|date'
+    ]);
+
+    $date = $request->query('date');
+
+    $appointments = Appointment::whereDate('date', $date)
+        ->get(['seat', 'date', 'start_time', 'end_time', 'comments']);
+
+    return response()->json(
+        $appointments->map(fn($a) => [
+            'inicio' => $a->start_time,
+            'fin'    => $a->end_time,
+            'titulo' => $a->comments,
+            'silla'  => $a->seat
+        ])
+    );
+}
+
 
     public function update(Request $request, $id)
     {
