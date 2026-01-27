@@ -24,7 +24,7 @@ class ClientController extends Controller
             'surnames' => 'required|string',
             'telephone' => 'nullable|string',
             'email' => 'nullable|email',
-            'home_client' => 'nullable|string'
+            'home_client' => 'nullable|boolean'
         ]);
 
         $client = Client::create($request->all());
