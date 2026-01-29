@@ -41,16 +41,10 @@ class AppointmentController extends Controller
     $date = $request->query('date');
 
     $appointments = Appointment::whereDate('date', $date)
-        ->get(['seat', 'date', 'start_time', 'end_time', 'comments']);
+        ->get(['id','seat', 'date', 'start_time', 'end_time', 'comments']);
 
-    return response()->json(
-        $appointments->map(fn($a) => [
-            'inicio' => $a->start_time,
-            'fin'    => $a->end_time,
-            'titulo' => $a->comments,
-            'silla'  => $a->seat
-        ])
-    );
+    return response()->json($appointments);
+
 }
 
 
