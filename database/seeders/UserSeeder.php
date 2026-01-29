@@ -33,7 +33,13 @@ class UserSeeder extends Seeder
             'email' => 'janedoe@example.com',
             'rol' => 'U',
             'password' => Hash::make('securepassword'), // Contraseña hasheada
+        ]);
 
+        User::create([
+            'username' => 'lucadoe',
+            'email' => 'lucadoe@example.com',
+            'rol' => 'U',
+            'password' => Hash::make('securepassword'), // Contraseña hasheada
         ]);
     }
 }
