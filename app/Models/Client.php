@@ -14,7 +14,8 @@ class Client extends Model
         'surnames',
         'telephone',
         'email',
-        'home_client'
+        'home_client',
+        'observations',
     ];
 
     public function appointments()
