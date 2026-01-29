@@ -84,39 +84,43 @@ class UserController extends Controller
 {
     $user = $request->user();
 
-    // Relación con el alumno
     $student = $user->student;
-
     if (!$student) {
-        return response()->json(['servicios_completados' => []]);
+        return response()->json(['servicios' => []]);
     }
 
-    // Obtener todas las citas finalizadas del alumno con sus servicios
+    // Traer todas las citas finalizadas del alumno
     $appointments = $student->appointments()
-        ->whereDate('date', '<=', now()) // solo citas finalizadas
-        ->with('services.service')       // traer el servicio relacionado
+        ->whereDate('date', '<=', now())
+        ->with('services.service')
         ->get();
 
-    $completedServices = [];
-
+    // Contar cuántas veces se ha completado cada servicio
+    $serviceCounts = [];
     foreach ($appointments as $appointment) {
         foreach ($appointment->services as $appointmentService) {
-            $service = $appointmentService->service;
-            if ($service) {
-                $completedServices[] = [
-                    'id' => $service->id,
-                    'nombre' => $service->name,
-                ];
+            if ($appointmentService->service) {
+                $id = $appointmentService->service->id;
+                $serviceCounts[$id] = ($serviceCounts[$id] ?? 0) + 1;
             }
         }
     }
 
-    // Eliminar duplicados si el mismo servicio se hizo varias veces
-    $completedServices = collect($completedServices)
-        ->unique('id')
-        ->values();
+    // Traer todos los servicios posibles
+    $allServices = \App\Models\Service::all();
 
-    return response()->json(['servicios_completados' => $completedServices]);
+    // Generar array final con completado y cantidad
+    $servicios = $allServices->map(function ($service) use ($serviceCounts) {
+        $cantidad = $serviceCounts[$service->id] ?? 0;
+        return [
+            'id' => $service->id,
+            'nombre' => $service->name,
+            'completado' => $cantidad > 0,
+            'cantidad_completada' => $cantidad
+        ];
+    });
+
+    return response()->json(['servicios' => $servicios]);
 }
 
 
