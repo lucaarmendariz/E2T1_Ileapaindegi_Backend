@@ -19,7 +19,9 @@ return new class extends Migration {
             $table->integer('stock');
             $table->integer('min_stock');
             $table->date('expiration_date');
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')
+                ->constrained()
+                ->restrictOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

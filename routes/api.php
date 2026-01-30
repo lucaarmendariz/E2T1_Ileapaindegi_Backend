@@ -48,3 +48,5 @@ Route::get('/profile', [UserController::class, 'profile'])
 //Route to get the progress of the authenticated user
 Route::get('/profile/progress', [UserController::class, 'progress'])
     ->middleware('auth:sanctum');
+
+    

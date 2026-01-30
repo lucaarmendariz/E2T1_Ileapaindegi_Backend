@@ -41,7 +41,16 @@ class CategoryController extends Controller
     // Eliminar categoría
     public function destroy($id)
     {
-        Category::findOrFail($id)->delete();
+        $category = Category::findOrFail($id);
+
+        if ($category->consumables()->exists()) {
+            return response()->json([
+                'message' => 'No se puede eliminar la categoría porque tiene materiales asociados'
+            ], 409);
+        }
+
+        $category->delete();
         return response()->json(null, 204);
     }
+
 }

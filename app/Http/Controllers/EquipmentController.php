@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\StudentEquipment;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
     public function index()
     {
-        return response()->json(Equipment::all());
+        $equipments = Equipment::with('studentEquipments')->get();
+
+        // Puedes agregar el atributo is_occupied manualmente
+        $equipments->each(function ($equipment) {
+            $equipment->is_occupied = $equipment->is_occupied; // atributo accesor
+        });
+
+        return response()->json($equipments);
     }
 
     public function show($id)
@@ -19,7 +27,7 @@ class EquipmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name'=>'required|string']);
+        $request->validate(['name' => 'required|string']);
         $equipment = Equipment::create($request->all());
         return response()->json($equipment, 201);
     }
@@ -36,4 +44,19 @@ class EquipmentController extends Controller
         Equipment::findOrFail($id)->delete();
         return response()->json(null, 204);
     }
+
+    public function getOccupiedEquipmentsWithStudents()
+{
+    $now = Carbon::now();
+
+    $occupied = StudentEquipment::with(['student', 'equipment'])
+        ->where('start_datetime', '<=', $now)
+        ->where(function ($query) use ($now) {
+            $query->whereNull('end_datetime')
+                  ->orWhere('end_datetime', '>', $now);
+        })
+        ->get();
+
+    return response()->json($occupied);
+}
 }
