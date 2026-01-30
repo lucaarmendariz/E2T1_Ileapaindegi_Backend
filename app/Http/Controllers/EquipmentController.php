@@ -19,7 +19,7 @@ class EquipmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name'=>'required|string','stock'=>'required|integer']);
+        $request->validate(['name'=>'required|string']);
         $equipment = Equipment::create($request->all());
         return response()->json($equipment, 201);
     }
