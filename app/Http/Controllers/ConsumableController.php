@@ -30,17 +30,26 @@ class ConsumableController extends Controller
             'description' => 'nullable|string'
         ]);
 
-
         $consumable = Consumable::create($request->all());
+
+        // 👇 Cargar la categoría
+        $consumable->load('category');
+
         return response()->json($consumable, 201);
     }
+
 
     public function update(Request $request, $id)
     {
         $consumable = Consumable::findOrFail($id);
         $consumable->update($request->all());
+
+        // 👇 Cargar la categoría
+        $consumable->load('category');
+
         return response()->json($consumable);
     }
+
 
     public function destroy($id)
     {
