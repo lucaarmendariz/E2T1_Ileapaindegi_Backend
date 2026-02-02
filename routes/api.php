@@ -21,6 +21,7 @@ use App\Http\Controllers\StudentController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('appointments/by-date', [AppointmentController::class, 'byDate'])->middleware('auth:sanctum');
+Route::get('appointments/by-student', [AppointmentController::class, 'byStudent'])->middleware('auth:sanctum');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

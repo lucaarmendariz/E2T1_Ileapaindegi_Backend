@@ -22,6 +22,26 @@ class AppointmentController extends Controller
         );
     }
 
+    /**
+     * Obtener citas de un estudiante específico
+     */
+    public function byStudent(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,id'
+        ]);
+
+        $studentId = $request->query('student_id');
+
+        $appointments = Appointment::where('student_id', $studentId)
+            ->with(['client', 'services.service'])
+            ->orderBy('date', 'desc')
+            ->orderBy('start_time', 'desc')
+            ->get();
+
+        return response()->json($appointments);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
