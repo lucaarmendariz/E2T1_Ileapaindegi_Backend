@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Equipment extends Model
 {
-    protected $table = 'equipments'; // <- forzar el plural correcto
-    // Equipment.php
-
-    protected $appends = ['is_occupied'];
+    protected $table = 'equipments';
 
     protected $fillable = [
         'name',
@@ -18,17 +16,23 @@ class Equipment extends Model
         'brand'
     ];
 
-    public function studentEquipments()
+    protected $appends = ['is_occupied'];
+
+    public function studentEquipments(): HasMany
     {
         return $this->hasMany(StudentEquipment::class);
     }
 
-    // Equipos ocupados: tiene asignaciones activas (sin fecha de fin o con fin en el futuro)
-    public function getIsOccupiedAttribute()
+    /**
+     * Equipo ocupado si tiene alguna asignación activa
+     */
+    public function getIsOccupiedAttribute(): bool
     {
         return $this->studentEquipments()
-            ->whereNull('end_datetime')
-            ->orWhere('end_datetime', '>', now())
+            ->where(function ($query) {
+                $query->whereNull('deleted_at')
+                      ->orWhere('deleted_at', '>', now());
+            })
             ->exists();
     }
 }
