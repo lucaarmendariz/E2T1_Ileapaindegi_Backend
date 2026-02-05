@@ -50,4 +50,9 @@ Route::get('/profile', [UserController::class, 'profile'])
 Route::get('/profile/progress', [UserController::class, 'progress'])
     ->middleware('auth:sanctum');
 
-    
+Route::apiResource('equipments', EquipmentController::class);
+Route::apiResource('student_equipments', StudentEquipmentController::class)->except(['destroy']);
+
+Route::get('student_equipments-active', [StudentEquipmentController::class, 'active']);
+Route::put('student_equipments/{id}/finish', [StudentEquipmentController::class, 'finish']);
+
