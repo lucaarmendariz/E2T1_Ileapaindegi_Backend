@@ -1,5 +1,11 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AppointmentServiceController;
 use App\Http\Controllers\CategoryController;
@@ -10,49 +16,57 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentConsumableController;
 use App\Http\Controllers\StudentEquipmentController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StudentController;
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('appointments/by-date', [AppointmentController::class, 'byDate'])->middleware('auth:sanctum');
-Route::get('appointments/by-student', [AppointmentController::class, 'byStudent'])->middleware('auth:sanctum');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Sarbidea mugatuta duten rutak:
+Route::middleware('auth:sanctum')->group(function () {
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::apiResource('students', StudentController::class)->middleware('auth:sanctum');
-Route::apiResource('appointments', AppointmentController::class)->middleware('auth:sanctum');
-Route::apiResource('appointment_services', AppointmentServiceController::class)->middleware('auth:sanctum');
-Route::apiResource('categorys', CategoryController::class)->middleware('auth:sanctum');
-Route::apiResource('clients', ClientController::class)->middleware('auth:sanctum');
-Route::apiResource('consumables', ConsumableController::class)->middleware('auth:sanctum');
-Route::apiResource('equipments', EquipmentController::class)->middleware('auth:sanctum');
-Route::apiResource('groups', GroupController::class)->middleware('auth:sanctum');
-Route::apiResource('schedules', ScheduleController::class)->middleware('auth:sanctum');
-Route::apiResource('services', ServiceController::class)->middleware('auth:sanctum');
-Route::apiResource('shifts', ShiftController::class)->middleware('auth:sanctum');
-Route::apiResource('student_consumables', StudentConsumableController::class)->middleware('auth:sanctum');
-Route::apiResource('student_equipments', StudentEquipmentController::class)->middleware('auth:sanctum');
-Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
+    // Logeatutako erabiltzailearen datuak hartu
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
+    Route::apiResource('/students', StudentController::class);
+    
+    Route::apiResource('/appointments', AppointmentController::class);
+    Route::get('/appointments/by-date', [AppointmentController::class, 'byDate']);
+    Route::get('/appointments/by-student', [AppointmentController::class, 'byStudent']);
 
-//Route to get the profile of the authenticated user
-Route::get('/profile', [UserController::class, 'profile'])
-    ->middleware('auth:sanctum');
-//Route to get the progress of the authenticated user
-Route::get('/profile/progress', [UserController::class, 'progress'])
-    ->middleware('auth:sanctum');
+    Route::apiResource('/appointment_services', AppointmentServiceController::class);
 
-Route::apiResource('equipments', EquipmentController::class);
-Route::apiResource('student_equipments', StudentEquipmentController::class)->except(['destroy']);
+    Route::apiResource('/categories', CategoryController::class);
 
-Route::get('student_equipments-active', [StudentEquipmentController::class, 'active']);
-Route::put('student_equipments/{id}/finish', [StudentEquipmentController::class, 'finish']);
+    Route::apiResource('/clients', ClientController::class);
 
+    Route::apiResource('/consumables', ConsumableController::class);
+
+    Route::apiResource('/equipments', controller: EquipmentController::class);
+
+    Route::apiResource('/groups', GroupController::class);
+
+    Route::apiResource('/schedules', ScheduleController::class);
+
+    Route::apiResource('/services', ServiceController::class);
+    
+    Route::apiResource('/shifts', ShiftController::class);
+
+    Route::apiResource('/student-consumables', StudentConsumableController::class);
+
+    Route::apiResource('/student-equipments', StudentEquipmentController::class)
+        ->except(['destroy']);
+    Route::get('/student-equipments/active', [StudentEquipmentController::class, 'active']);
+    Route::put('/student-equipments/{id}/finish', [StudentEquipmentController::class, 'finish']);
+    
+    Route::apiResource('/users', UserController::class);
+
+    // Jasotzeko autentikatutako erabiltzailearen informazioa
+    Route::get('/profile', [UserController::class, 'profile']);
+    // Jasotzeko autentikatutako erabiltzailearen progresoa
+    Route::get('/profile/progress', [UserController::class, 'progress']);
+});
