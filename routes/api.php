@@ -57,4 +57,3 @@ Route::apiResource('student_equipments', StudentEquipmentController::class)->exc
 
 Route::get('student_equipments-active', [StudentEquipmentController::class, 'active']);
 Route::put('student_equipments/{id}/finish', [StudentEquipmentController::class, 'finish']);
-

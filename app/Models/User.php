@@ -14,6 +14,9 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
     /**
      * The attributes that are mass assignable.
      *

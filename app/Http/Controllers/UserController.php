@@ -23,6 +23,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // Validación
         $request->validate([
             'username' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -30,6 +31,14 @@ class UserController extends Controller
             'rol' => 'required|string|max:1'
         ]);
 
+        // Asegúrate de no incluir los usuarios eliminados
+        $existingUser = User::where('email', $request->email)->whereNull('deleted_at')->first();
+
+        if ($existingUser) {
+            return response()->json(['message' => 'Ya existe un usuario con este email'], 422);
+        }
+
+        // Crear el nuevo usuario
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
@@ -39,6 +48,7 @@ class UserController extends Controller
 
         return response()->json($user, 201);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -81,48 +91,46 @@ class UserController extends Controller
     }
 
     public function progress(Request $request)
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    $student = $user->student;
-    if (!$student) {
-        return response()->json(['servicios' => []]);
-    }
+        $student = $user->student;
+        if (!$student) {
+            return response()->json(['servicios' => []]);
+        }
 
-    // Traer todas las citas finalizadas del alumno
-    $appointments = $student->appointments()
-        ->whereDate('date', '<=', now())
-        ->with('services.service')
-        ->get();
+        // Traer todas las citas finalizadas del alumno
+        $appointments = $student->appointments()
+            ->whereDate('date', '<=', now())
+            ->with('services.service')
+            ->get();
 
-    // Contar cuántas veces se ha completado cada servicio
-    $serviceCounts = [];
-    foreach ($appointments as $appointment) {
-        foreach ($appointment->services as $appointmentService) {
-            if ($appointmentService->service) {
-                $id = $appointmentService->service->id;
-                $serviceCounts[$id] = ($serviceCounts[$id] ?? 0) + 1;
+        // Contar cuántas veces se ha completado cada servicio
+        $serviceCounts = [];
+        foreach ($appointments as $appointment) {
+            foreach ($appointment->services as $appointmentService) {
+                if ($appointmentService->service) {
+                    $id = $appointmentService->service->id;
+                    $serviceCounts[$id] = ($serviceCounts[$id] ?? 0) + 1;
+                }
             }
         }
+
+        // Traer todos los servicios posibles
+        $allServices = \App\Models\Service::all();
+
+        // Generar array final con completado y cantidad
+        $servicios = $allServices->map(function ($service) use ($serviceCounts) {
+            $cantidad = $serviceCounts[$service->id] ?? 0;
+            return [
+                'id' => $service->id,
+                'nombre' => $service->name,
+                'completado' => $cantidad > 0,
+                'cantidad_completada' => $cantidad
+            ];
+        });
+
+
+        return response()->json(['servicios' => $servicios]);
     }
-
-    // Traer todos los servicios posibles
-    $allServices = \App\Models\Service::all();
-
-    // Generar array final con completado y cantidad
-    $servicios = $allServices->map(function ($service) use ($serviceCounts) {
-        $cantidad = $serviceCounts[$service->id] ?? 0;
-        return [
-            'id' => $service->id,
-            'nombre' => $service->name,
-            'completado' => $cantidad > 0,
-            'cantidad_completada' => $cantidad
-        ];
-    });
-
-    return response()->json(['servicios' => $servicios]);
-}
-
-
-
 }

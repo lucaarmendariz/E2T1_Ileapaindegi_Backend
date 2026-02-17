@@ -29,7 +29,6 @@ class StudentController extends Controller
         $request->validate([
             'name' => 'required|string',
             'surnames' => 'required|string',
-            'group_id' => 'required|exists:groups,id'
         ]);
 
         $student = Student::create($request->all());
