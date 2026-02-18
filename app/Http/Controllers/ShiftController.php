@@ -3,25 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shift;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class ShiftController extends Controller
 {
     public function index()
     {
-        return response()->json(Shift::with('student','schedule')->get());
-    }
-
-    public function show($id)
-    {
-        return response()->json(Shift::with('student','schedule')->findOrFail($id));
+        // Traemos los turnos con estudiante y schedule
+        return response()->json(Shift::with('student', 'schedule.group')->get());
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'student_id'=>'required|exists:students,id',
-            'schedule_id'=>'required|exists:schedules,id'
+            'student_id'  => 'required|exists:students,id',
+            'type'        => 'required|string',
+            'date'       => 'required|date'
         ]);
 
         $shift = Shift::create($request->all());

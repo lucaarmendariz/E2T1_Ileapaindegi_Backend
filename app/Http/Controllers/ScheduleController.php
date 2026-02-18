@@ -9,21 +9,23 @@ class ScheduleController extends Controller
 {
     public function index()
     {
-        return response()->json(Schedule::with('group','shifts')->get());
+        return response()->json(Schedule::get());
     }
 
     public function show($id)
     {
-        return response()->json(Schedule::with('group','shifts')->findOrFail($id));
+        return response()->json(Schedule::with('group')->findOrFail($id));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'day'=>'required|string',
-            'group_id'=>'required|exists:groups,id',
-            'start_time'=>'required|date_format:H:i',
-            'end_time'=>'required|date_format:H:i'
+            'day' => 'required|string',
+            'group_id' => 'required|exists:groups,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date'
         ]);
 
         $schedule = Schedule::create($request->all());
@@ -32,6 +34,15 @@ class ScheduleController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'day' => 'required|string',
+            'group_id' => 'required|exists:groups,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date'
+        ]);
+
         $schedule = Schedule::findOrFail($id);
         $schedule->update($request->all());
         return response()->json($schedule);
