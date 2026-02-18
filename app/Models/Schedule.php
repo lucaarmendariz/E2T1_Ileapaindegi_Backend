@@ -19,4 +19,9 @@ class Schedule extends Model
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
 }
