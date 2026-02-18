@@ -12,8 +12,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        return response()->json(User::all());
+        // Solo usuarios que no estén borrados
+        $users = User::whereNull('deleted_at')->get();
+        return response()->json($users);
     }
+
 
     public function show($id)
     {
@@ -74,10 +77,18 @@ class UserController extends Controller
 
 
     public function destroy($id)
-    {
-        User::findOrFail($id)->delete();
-        return response()->json(null, 204);
+{
+    $user = User::findOrFail($id);
+
+    // Eliminar el student relacionado si existe
+    if ($user->student) {
+        $user->student->delete();
     }
+
+    $user->delete();
+
+    return response()->json(null, 204);
+}
 
     public function profile(Request $request)
     {
