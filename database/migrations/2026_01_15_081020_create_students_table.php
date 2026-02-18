@@ -15,16 +15,18 @@ return new class extends Migration {
 
             // 🔗 Relación con users
             $table->foreignId('user_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->string('name');
             $table->string('surnames');
 
             $table->foreignId('group_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->nullable()  // Esto hace que el campo sea opcional
+                ->constrained()
+                ->cascadeOnDelete();
+
 
             $table->timestamps();
             $table->softDeletes();
